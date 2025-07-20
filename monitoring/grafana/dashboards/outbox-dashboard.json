@@ -1,0 +1,136 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Outbox System Dashboard",
+    "tags": ["outbox", "kafka", "postgresql"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Outbox Messages Created",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(outbox_messages_created_total[5m])",
+            "legendFormat": "{{entity_type}} - {{event_type}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "list"
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Outbox Messages Processed",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(outbox_messages_processed_total[5m])",
+            "legendFormat": "{{entity_type}} - {{status}}"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Pending Messages",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "outbox_messages_pending",
+            "legendFormat": "Pending Messages"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 1000,
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 100},
+                {"color": "red", "value": 500}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Processing Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(outbox_processing_time_seconds_sum[5m]) / rate(outbox_processing_time_seconds_count[5m])",
+            "legendFormat": "{{entity_type}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Processing Time (seconds)"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Failed Messages",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "outbox_messages_failed",
+            "legendFormat": "Failed Messages"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 1}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Dead Letter Messages",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "outbox_messages_dead_letter",
+            "legendFormat": "Dead Letter Messages"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 1}
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "10s"
+  }
+} 
